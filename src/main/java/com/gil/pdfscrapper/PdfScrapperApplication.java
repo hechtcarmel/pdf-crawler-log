@@ -28,9 +28,9 @@ public class PdfScrapperApplication implements CommandLineRunner {
 		Scanner scanner = new Scanner(System.in);
 		LocalDate filterDate = null;
 
-		final String green = "\033[32m"; // Green text color
-		final String red = "\033[31m";   // Red text color
-		final String reset = "\033[0m";  // Reset to default color
+		final String green = ""; //"\033[32m"; // Green text color
+		final String red = "";//"\033[31m";   // Red text color
+		final String reset = "";//"\033[0m";  // Reset to default color
 
 		System.out.println(green + "Welcome!" + reset);
 		System.out.println(green + "To use today (" + LocalDate.now() + ") enter TODAY" + reset);
