@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <appender name="HUMAN_READABLE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/application-human.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %d{HH:mm:ss} [%-5level] - %msg%n
+            </Pattern>
+        </encoder>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ./logs/application-human-%d{yyyy-MM-dd-mm}.%i.log
+            </fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>200MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss} [%-5level] - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="ASYNC_HUMAN_READABLE_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="HUMAN_READABLE_FILE"/>
+        <maxFlushTime>500</maxFlushTime>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>2048</queueSize>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="CONSOLE"/>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>2048</queueSize>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="debug">
+        <appender-ref ref="ASYNC_HUMAN_READABLE_FILE" />
+        <appender-ref ref="ASYNC_CONSOLE"/>
+
+    </root>
+</configuration>
+
+
+

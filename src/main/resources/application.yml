@@ -1,0 +1,10 @@
+spring:
+  main:
+    web-application-type: none
+    log-startup-info: off
+    banner-mode: off
+logging:
+  level:
+    root: OFF
+    com:
+      gil: DEBUG
