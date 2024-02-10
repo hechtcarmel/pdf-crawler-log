@@ -50,8 +50,8 @@ public class WebScrapperService {
 
     public void run(LocalDate filterDate) throws IOException, InterruptedException {
         Path successFile = getSuccessFile();
-        CheckpointFileDto checkpointFileDto = loadCheckpoint();
-        final int currentCheckpoint = checkpointFileDto.getCheckpoint();
+//        CheckpointFileDto checkpointFileDto = loadCheckpoint();
+        final int currentCheckpoint = 0;// checkpointFileDto.getCheckpoint();
         final int batchSize = appConfigs.BATCH_SIZE;
 
         for (int batchStart = currentCheckpoint + 1; batchStart <= appConfigs.MAX_URL_NUMBER; batchStart += batchSize) {
@@ -62,7 +62,7 @@ public class WebScrapperService {
             updateSuccessFile(successfulBatchUrls, successFile);
             successfulBatchUrls.clear(); //* Clear the queue for the next batch
 
-            updateCheckpointFile(batchEnd);
+//            updateCheckpointFile(batchEnd);
             log.info("Processed up to URL number {}", batchEnd);
         }
 
@@ -156,47 +156,47 @@ public class WebScrapperService {
         }
     }
 
-    private CheckpointFileDto loadCheckpoint() {
-        Path path = Paths.get(appConfigs.CHECKPOINT_FILE);
-        log.info("Loading checkpoint file from {}", path);
-        CheckpointFileDto checkpointFileDto;
-        try {
-            FileTime fileTime = Files.getLastModifiedTime(path);
-            LocalDateTime lastModifiedTime = LocalDateTime.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-            if(!lastModifiedTime.equals(LocalDateTime.now())){
-                log.info("Not using checkpoint file, it is not from today. {}",lastModifiedTime.format(formatter) );
-                return new CheckpointFileDto(0);
-            }
-
-            checkpointFileDto = objectMapper.readValue(path.toFile(), CheckpointFileDto.class);
-            log.info("Loaded checkpoint={}, created at {}", checkpointFileDto.getCheckpoint(), lastModifiedTime.format(formatter));
-
-
-
-        } catch (IOException e) {
-            log.warn("Could not load checkpoint file. Starting from checkpoint=0");
-            return new CheckpointFileDto(0);
-        }
-
-        return checkpointFileDto;
-
-    }
-
-    private void updateCheckpointFile(int newCheckpoint) throws IOException {
-        CheckpointFileDto checkpointFileDto = new CheckpointFileDto(newCheckpoint);
-        Path checkpointFilePath = Paths.get(appConfigs.CHECKPOINT_FILE);
-        //* Ensure directory exists
-        Path parentDir = checkpointFilePath.getParent();
-        if (parentDir != null && Files.notExists(parentDir)) {
-            Files.createDirectories(parentDir);
-        }
-
-        ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
-        writer.writeValue(checkpointFilePath.toFile(), checkpointFileDto);
+//    private CheckpointFileDto loadCheckpoint() {
+//        Path path = Paths.get(appConfigs.CHECKPOINT_FILE);
+//        log.info("Loading checkpoint file from {}", path);
+//        CheckpointFileDto checkpointFileDto;
+//        try {
+//            FileTime fileTime = Files.getLastModifiedTime(path);
+//            LocalDateTime lastModifiedTime = LocalDateTime.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+//            if(!lastModifiedTime.equals(LocalDateTime.now())){
+//                log.info("Not using checkpoint file, it is not from today. {}",lastModifiedTime.format(formatter) );
+//                return new CheckpointFileDto(0);
+//            }
 //
-//        String checkpointData = objectMapper.writeValueAsString(checkpointFileDto);
-//        Files.write(checkpointFilePath, checkpointData.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-    }
+//            checkpointFileDto = objectMapper.readValue(path.toFile(), CheckpointFileDto.class);
+//            log.info("Loaded checkpoint={}, created at {}", checkpointFileDto.getCheckpoint(), lastModifiedTime.format(formatter));
+//
+//
+//
+//        } catch (IOException e) {
+//            log.warn("Could not load checkpoint file. Starting from checkpoint=0");
+//            return new CheckpointFileDto(0);
+//        }
+//
+//        return checkpointFileDto;
+//
+//    }
+
+//    private void updateCheckpointFile(int newCheckpoint) throws IOException {
+//        CheckpointFileDto checkpointFileDto = new CheckpointFileDto(newCheckpoint);
+//        Path checkpointFilePath = Paths.get(appConfigs.CHECKPOINT_FILE);
+//        //* Ensure directory exists
+//        Path parentDir = checkpointFilePath.getParent();
+//        if (parentDir != null && Files.notExists(parentDir)) {
+//            Files.createDirectories(parentDir);
+//        }
+//
+//        ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
+//        writer.writeValue(checkpointFilePath.toFile(), checkpointFileDto);
+////
+////        String checkpointData = objectMapper.writeValueAsString(checkpointFileDto);
+////        Files.write(checkpointFilePath, checkpointData.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+//    }
 
 }
