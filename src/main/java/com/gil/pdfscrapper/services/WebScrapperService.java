@@ -164,9 +164,16 @@ public class WebScrapperService {
             FileTime fileTime = Files.getLastModifiedTime(path);
             LocalDateTime lastModifiedTime = LocalDateTime.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            if(!lastModifiedTime.equals(LocalDateTime.now())){
+                log.info("Not using checkpoint file, it is not from today. {}",lastModifiedTime.format(formatter) );
+                return new CheckpointFileDto(0);
+            }
 
             checkpointFileDto = objectMapper.readValue(path.toFile(), CheckpointFileDto.class);
             log.info("Loaded checkpoint={}, created at {}", checkpointFileDto.getCheckpoint(), lastModifiedTime.format(formatter));
+
+
+
         } catch (IOException e) {
             log.warn("Could not load checkpoint file. Starting from checkpoint=0");
             return new CheckpointFileDto(0);
